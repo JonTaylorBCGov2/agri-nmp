@@ -23,7 +23,7 @@ app {
     git {
         workDir = ['git', 'rev-parse', '--show-toplevel'].execute().text.trim()
         uri = ['git', 'config', '--get', 'remote.origin.url'].execute().text.trim()
-        ref = ['bash','-c', 'git config branch.`git name-rev --name-only HEAD`.merge'].execute().text.trim()
+        ref = "refs/pull/${opt.'pr'}/head"
         commit = ['git', 'rev-parse', 'HEAD'].execute().text.trim()
     }
 
@@ -40,7 +40,7 @@ app {
         timeoutInSeconds = 60*20 // 20 minutes
         templates = [
             [
-                'file':'openshift/jenkins.bc.json',
+                'file':'openshift/jenkins.bc.yaml',
                 'params':[
                     'NAME': "${app.build.name}",
                     'SUFFIX': "${app.build.suffix}",
@@ -97,7 +97,7 @@ environments {
                 name = "${opt.'deployment-name'?:app.name}"
                 namespace = app.namespaces[env.name].namespace
                 version = "${vars.deployment.name}-${vars.deployment.env.name}-v${opt.'pr'}" //app-version  and tag
-                host = "${vars.deployment.name}${vars.deployment.suffix}-${vars.deployment.namespace}-pathfinder.gov.bc.ca"
+                host = "${vars.deployment.name}${vars.deployment.suffix}-${vars.deployment.namespace}.pathfinder.gov.bc.ca"
             }
         }
     }
@@ -112,7 +112,7 @@ environments {
                 name = "${opt.'deployment-name'?:app.name}"
                 namespace = app.namespaces[env.name].namespace
                 version = "${vars.deployment.name}-${vars.deployment.env.name}" //app-version  and tag
-                host = "${vars.deployment.name}${vars.deployment.suffix}-${vars.deployment.namespace}-pathfinder.gov.bc.ca"
+                host = "${vars.deployment.name}${vars.deployment.suffix}-${vars.deployment.namespace}.pathfinder.gov.bc.ca"
             }
         }
     }
